@@ -1,0 +1,35 @@
+/* :root {
+    --icon-width: 22px;
+    --icon-height: 22px;
+  }
+  
+  .icon {
+    width: var(--icon-width);
+    height: var(--icon-height);
+  }
+  
+  .dark {
+    display: none;
+  }
+  
+  .light {
+    display: block;
+  } */
+  
+
+  
+  .track {
+    width: rem(40px);
+    height: rem(6px);
+    overflow: visible;
+  }
+  
+  .thumb {
+    width: rem(20px);
+    height: rem(20px);
+    transition: background-color 100ms ease, left 100ms ease;
+  
+    input:checked + * > & {
+      background-color: var(--mantine-color-blue-filled);
+    }
+  }
