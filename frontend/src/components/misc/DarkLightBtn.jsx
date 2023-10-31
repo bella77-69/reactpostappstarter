@@ -14,7 +14,7 @@ export function DarkLightBtn() {
   });
 
   return (
-    <Group justify="center">
+    <Group justify="center" p="md">
       <Switch
         onClick={() =>
           setColorScheme(computedColorScheme === "light" ? "dark" : "light")

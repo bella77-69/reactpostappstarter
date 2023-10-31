@@ -1,6 +1,18 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useBoundStore from "../../store/Store";
+import {
+  TextInput,
+  Title,
+  PasswordInput,
+  Checkbox,
+  Anchor,
+  Paper,
+  Container,
+  Group,
+  Button,
+} from "@mantine/core";
+import classes from "./LoginPage.module.css";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -20,38 +32,40 @@ const LoginPage = () => {
     loginService(email, password);
   };
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
-      <form onSubmit={onLogin}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gridGap: "20px",
-            background: "#d3d3d3",
-            padding: "50px",
-          }}
-        >
-          <h1>This is the login page</h1>
-          <input
+    <Container size={460} my={30}>
+      <Title className={classes.title} ta="center">
+        Login Page
+      </Title>
+      <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
+        <form onSubmit={onLogin}>
+          <TextInput
+            label="Email"
             placeholder="email"
             name="email"
             type="email"
             required
-            style={{ minWidth: "320px", height: "26px" }}
           />
-          <input
+          <PasswordInput
+            label="Password"
             placeholder="password"
             name="password"
             type="password"
             required
-            style={{ minWidth: "320px", height: "26px" }}
+            mt="md"
           />
-          <button type="submit">login</button>
+          <Group justify="space-between" mt="lg">
+            <Checkbox label="Remember me" />
+            <Anchor component="button" size="sm">
+              Forgot password?
+            </Anchor>
+          </Group>
+          <Button fullWidth mt="xl" type="submit">
+            login
+          </Button>
           {authLoading ? <h2>Loading...</h2> : null}
-        </div>
-      </form>
-    </div>
+        </form>
+      </Paper>
+    </Container>
   );
 };
 
