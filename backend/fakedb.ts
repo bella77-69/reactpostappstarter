@@ -31,15 +31,20 @@ export const posts = [
   },
 ];
 
-export const addPost = (post: any) => {
+export const addPost = (post: any, userId: number = 1) => {
   //  Issues:
   //  *     The request body contains the title, category, and image,
   //  *     but the addPost function needs to add a unique id
   //  *     and the id of the currently logged in user to the post.
-  post.id = 3;
-  post.userId = 2;
+  // Generate a unique ID for the new post
+  post.id = generateUniqueId();
+  post.userId = userId;
   posts.push(post);
 };
+
+function generateUniqueId() {
+  return Date.now();
+}
 
 export const verifyUser = (email: string, password: string) => {
   const user = users.find((user) => {
@@ -52,7 +57,7 @@ export const verifyUser = (email: string, password: string) => {
 export const findUserById = (id: number) => {
   const user = users.find((user) => user.id === id);
   if (!user) throw new Error("User not found");
-  return user;
+  return user.email;
 };
 
 export const parseToken = (authHeader: string | undefined, res: Response) => {

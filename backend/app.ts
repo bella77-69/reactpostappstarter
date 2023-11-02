@@ -44,15 +44,32 @@ app.post("/api/user/validation", (req, res) => {
 
 app.get("/api/posts", async (req, res) => {
   // Sleep delay goes here
+  await sleep(1000);
+  
   res.json(posts);
 });
 
 // ⭐️ TODO: Implement this yourself
-app.get("/api/posts/:id", (req, res) => {
-  const id = req.params.id;
+app.get("/api/posts/:id", async (req, res) => {
+  const id = parseInt(req.params.id, 10);
   // The line below should be fixed.
-  res.json(posts[0]);
-});
+  // res.json(posts[0]);
+  const post = posts.find((post) => post.id === id);
+
+    if (!post) {
+      res.status(404).json({ error: "Post not found" });
+      return;
+    }
+    // find user email by id
+    const userEmail = findUserById(post.userId);
+    if(!userEmail) {
+      res.status(500).json({ error: "User not found for this post!!!" });
+      return;
+    }
+    // return post with user email
+    res.json({ ...post, email: userEmail });
+}
+);
 
 /**
  * Problems with this:

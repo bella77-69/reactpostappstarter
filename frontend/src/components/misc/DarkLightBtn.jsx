@@ -14,14 +14,14 @@ export function DarkLightBtn() {
   });
 
   return (
-    <Group justify="center" p="md">
+    <Group justify="center" p="md" >
       <Switch
         onClick={() =>
           setColorScheme(computedColorScheme === "light" ? "dark" : "light")
         }
         variant="default"
         aria-label="Toggle color scheme"
-        classNames={classes}
+        classNames={classes.group}
       >
         {/* <IconSun
           className={cx(

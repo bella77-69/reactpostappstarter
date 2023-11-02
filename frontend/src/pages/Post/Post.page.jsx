@@ -4,8 +4,10 @@ import { ArticleCardImage } from "../../components/misc/ArticleCardImage";
 import { SimpleGrid, Container } from "@mantine/core";
 import { useLoaderData } from "react-router-dom";
 
+
 export const PostPage = () => {
   const posts = useLoaderData();
+  console.log(posts);
   return (
     <Container>
       <SimpleGrid cols={3}>

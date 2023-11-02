@@ -12,12 +12,13 @@ const Navbar = () => {
 
   return (
     <header className={classes.header}>
-      
       <Container size="md" className={classes.inner}>
         <MantineLogo size={28} />
-       
+
         <Group gap={5} visibleFrom="xs">
-          {items}
+          {items.map((item, index) => (
+            <div key={index}>{item}</div>
+          ))}
         </Group>
         <DarkLightBtn />
         <Burger hiddenFrom="xs" opened={opened} onClick={toggle} />

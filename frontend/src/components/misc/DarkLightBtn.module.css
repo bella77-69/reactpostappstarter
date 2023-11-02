@@ -31,5 +31,6 @@
   
     input:checked + * > & {
       background-color: var(--mantine-color-blue-filled);
+      left: calc(100% - rem(12px));
     }
   }
