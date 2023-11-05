@@ -4,12 +4,13 @@ import DOMAIN from "../../services/endpoint";
 import axios from "axios";
 import { Button, Container } from "@mantine/core";
 import { Card, Image, Text, Group } from "@mantine/core";
-
 import classes from "./PostDetailsPage.module.css";
+import useBoundStore from "../../store/Store";
 
 function PostDetailsPage() {
   const { id } = useParams();
   const [post, setPost] = useState(null);
+  const { user } = useBoundStore((state) => state);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -28,8 +29,7 @@ function PostDetailsPage() {
     return <div>Loading post details...</div>;
   }
 
-  const { email, title, category, content, image } = post;
-  console.log("PostDetails Post:", post);
+  const { email, title, category, content, image, userId } = post;
 
   const truncatedEmail = email.split("@")[0];
 
@@ -59,6 +59,11 @@ function PostDetailsPage() {
                 <Group gap="xs" wrap="nowrap">
                   <Text size="xs"> Content: {content}</Text>
                 </Group>
+                {user && user.id === userId && (
+                  <Button>
+                    <Link to={`/posts/edit/${id}`}>Edit</Link>
+                  </Button>
+                )}
               </Group>
             </div>
           </Group>
@@ -69,12 +74,10 @@ function PostDetailsPage() {
 }
 
 export const postDetailsLoader = async ({ params }) => {
-  // do something with this
-  console.log("PostDetails Params:", params);
   const postId = params.id;
   try {
     const response = await axios.get(`${DOMAIN}/api/posts/${postId}`);
-    return response.data;
+    return { post: response.data };
   } catch (error) {
     console.error("Error fetching post details:", error);
     return null;
