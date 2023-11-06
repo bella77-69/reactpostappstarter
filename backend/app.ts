@@ -110,10 +110,10 @@ app.put("/api/posts/:id", (req, res) => {
   }
   // Check if the data posted is valid
   if (
-    incomingPost.title === "" ||
-    incomingPost.category === "" ||
-    incomingPost.content === "" ||
-    incomingPost.image === ""
+    !incomingPost.title ||
+    !incomingPost.category ||
+    !incomingPost.content ||
+    !incomingPost.image
   ) {
     res.status(400).json({ error: "Post data incorrect, try again!!" });
     return;

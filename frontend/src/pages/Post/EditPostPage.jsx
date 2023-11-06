@@ -12,14 +12,12 @@ import {
   Text,
 } from "@mantine/core";
 import classes from "./PostDetailsPage.module.css";
-// import useBoundStore from "../../store/Store";
 import { useForm } from "@mantine/form";
 
 function EditPostPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [post, setPost] = useState(null);
-  // const { user } = useBoundStore((state) => state);
   const [formData, setFormData] = useState({
     title: "",
     category: "",
@@ -138,12 +136,6 @@ function EditPostPage() {
                   Post updated successfully!
                 </Text>
               )}
-
-              {/* {user && user.id === post.userId && (
-              <Button onClick={handleUpdatePost} color="blue">
-                Update Post
-              </Button>
-            )} */}
             </div>
           </Group>
         </Card>
