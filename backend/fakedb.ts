@@ -32,7 +32,11 @@ export const posts = [
 ];
 
 export const addPost = (post: any, userId: number = 1) => {
-
+  //  Issues:
+  //  *     The request body contains the title, category, and image,
+  //  *     but the addPost function needs to add a unique id
+  //  *     and the id of the currently logged in user to the post.
+  // Generate a unique ID for the new post
   post.id = generateUniqueId();
   post.userId = userId;
   posts.push(post);

@@ -17,7 +17,6 @@ function PostDetailsPage() {
       try {
         const response = await axios.get(`${DOMAIN}/api/posts/${id}`);
         setPost(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error("Error fetching post details:", error);
       }
