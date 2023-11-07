@@ -10,21 +10,32 @@ import {
   posts,
   sleep,
 } from "./fakedb";
+require("dotenv").config();
 
 const port = 8085;
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// TODO: Obviously use a more secure signing key than "secret"
 app.post("/api/user/login", (req, res) => {
   try {
+    //get email and password from request body
     const { email, password } = req.body;
+    //verify user
     const user = verifyUser(email, password);
-    const token = jwt.sign({ id: user.id, email: user.email }, "secret", {
-      expiresIn: "2 days",
-    });
+    //get secret key from .env file
+    const secretKey = process.env.SECRET_KEY;
+    //create token using secret key
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      secretKey as string,
+      {
+        expiresIn: "2 days",
+      }
+    );
+    //send token and user data as response
     res.json({ result: { user, token } });
+    //error handling
   } catch (error) {
     res.status(401).json({ error });
   }
@@ -32,41 +43,49 @@ app.post("/api/user/login", (req, res) => {
 
 app.post("/api/user/validation", (req, res) => {
   try {
+    //get token from request header
     const authHeader = req.headers.authorization;
+    //parse token
     const token = parseToken(authHeader, res);
-    const decodedUser = jwt.verify(token, "secret");
+    //get secret key from .env file
+    const secretKey = process.env.SECRET_KEY;
+    //decode token 
+    const decodedUser = jwt.verify(token, secretKey as string);
+    //find user by id
     const user = findUserById((decodedUser as IDecodedUser).id);
+    //send user data as response
     res.json({ result: { user, token } });
+    //error handling
   } catch (error) {
     res.status(401).json({ error });
   }
 });
 
 app.get("/api/posts", async (req, res) => {
-  // Sleep delay goes here
-  await sleep(1000);
-
+  // Sleep delay 
+  await sleep(1500);
   res.json(posts);
 });
 
-// ⭐️ TODO: Implement this yourself
-app.get("/api/posts/:id", async (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  // The line below should be fixed.
-  // res.json(posts[0]);
-  const post = posts.find((post) => post.id === id);
 
+app.get("/api/posts/:id", async (req, res) => {
+  //get the id from request params
+  const id = parseInt(req.params.id, 10);
+  //find post by id
+  const post = posts.find((post) => post.id === id);
+  //error handling
   if (!post) {
     res.status(404).json({ error: "Post not found, try again" });
     return;
   }
-  // find user email by id
+  // find user email by their userId
   const userEmail = findUserById(post.userId);
+  //error handling
   if (!userEmail) {
     res.status(500).json({ error: "User is not found for this post!!!" });
     return;
   }
-  // return post with user email
+  // return post data with user email
   res.json({ ...post, email: userEmail });
 });
 /**
@@ -80,21 +99,40 @@ app.get("/api/posts/:id", async (req, res) => {
  *     with an empty/incorrect payload (post)
  */
 
-// ⭐️ TODO: add current logged in users id to the post (Token )
+// post request for CreatePostPage
 app.post("/api/posts", (req, res) => {
-  const incomingPost = req.body;
-  // Check if the data posted is valid
-  if (
-    incomingPost.title === "" ||
-    incomingPost.category === "" ||
-    incomingPost.content === "" ||
-    incomingPost.image === "" ||
-    incomingPost.userId === undefined
-  ) {
-    addPost(incomingPost);
-    res.status(200).json({ success: true });
-  } else {
-    res.status(400).json({ error: "Post data incorrect, try again!!" });
+  try {
+    //get token from request header
+    const authHeader = req.headers.authorization;
+    //parse token
+    const token = parseToken(authHeader, res);
+    //get secret key from .env file
+    const secretKey = process.env.SECRET_KEY;
+    //verify token
+    const decodedUser = jwt.verify(token, secretKey as string);
+    //get userId from decoded token
+    const userId = (decodedUser as IDecodedUser).id;
+    //get post data from request body
+    const incomingPost = req.body;
+
+    // Check if the data is valid
+    if (
+      incomingPost.title &&
+      incomingPost.category &&
+      incomingPost.image &&
+      incomingPost.content
+    ) {
+      //create new post
+      const newPost = { ...incomingPost, userId };
+      // add new post pass the userId to the post
+      addPost(newPost, userId); 
+      res.status(200).json({ success: true });
+    } else {
+      res.status(400).json({ error: "Post data incorrect, try again!!" });
+    }
+    //error handling
+  } catch (error) {
+    res.status(401).json({ error: "You are unauthorized!" });
   }
 });
 
